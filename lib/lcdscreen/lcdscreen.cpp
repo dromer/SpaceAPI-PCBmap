@@ -8,11 +8,11 @@
 
 void getHDtext(){
     if (stringbuf.length()>1) {
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject& root = jsonBuffer.parseObject(stringbuf);
+        DynamicJsonDocument doc(1024);
+        auto error = deserializeJson(doc, stringbuf);
 
         // Test if parsing succeeds.
-        if (!root.success()) {
+        if (error) {
             Serial.println("parseObject() failed");
             return;
         }
@@ -20,7 +20,7 @@ void getHDtext(){
         line1 = mySpaces[encoderPos];
 
         // String contact = root[mySpaces[encoderPos]]["contact"];
-        String address = root[mySpaces[encoderPos]]["location"]["address"];
+        String address = doc[mySpaces[encoderPos]]["location"]["address"];
 
         line2 = address;
 

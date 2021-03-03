@@ -10,14 +10,14 @@
 void setLeds(){
   if (stringbuf.length()>1) {
     //Start parsing json
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.parseObject(stringbuf);
+    DynamicJsonDocument doc(1024);
+    auto error = deserializeJson(doc, stringbuf);
 
-    DynamicJsonBuffer jsonBuffer_c;
-    JsonObject& root_c = jsonBuffer.parseObject(stringbuf_c);
+    DynamicJsonDocument doc_c(1024);
+    deserializeJson(doc_c, stringbuf_c);
 
     // Test if parsing succeeds.
-    if (!root.success()) {
+    if (error) {
       Serial.println("parseObject() failed");
       return;
     }
@@ -25,8 +25,8 @@ void setLeds(){
         // Check json for all spaces in mySpaces[]
         for (int thisSpace = 0; thisSpace < spaceLen; thisSpace++){
             // read space from json and set colour (move to color/animation-mode at some point)
-            bool spaceState = root[mySpaces[thisSpace]]["state"]["open"];
-            bool prevState = root_c[mySpaces[thisSpace]]["state"]["open"];
+            bool spaceState = doc[mySpaces[thisSpace]]["state"]["open"];
+            bool prevState = doc_c[mySpaces[thisSpace]]["state"]["open"];
             if (spaceState){
                     spaceColour[thisSpace] = Color(0, 100, 0);
             } else {
